@@ -11,11 +11,12 @@ function UpdateMovie (props) {
         stars: []
     });
 
+    const id = props.match.params.id;
+    const movieInArr = props.movies.find(movie => `${movie.id}` === id);
+
     useEffect(() => {
-        const id = props.match.params.id;
-        const movieInArr = props.movies.find(movie => `${movie.id}` === id);
         if (movieInArr) setUpdatedMovie(movieInArr);
-    }, [props.movies, props.match.params.id]);
+    }, [props.movies, id]);
 
    
     const handleChange = (e) => {
@@ -26,6 +27,9 @@ function UpdateMovie (props) {
         setUpdatedMovie(newMovie);  
     }
     
+    const handleStars = (index) => e => {
+        setUpdatedMovie({...updatedMovie, stars: updatedMovie.stars.map((star, starIndex) => starIndex === index ? e.target.value : star)})
+    }
     
     
     const handleSubmit = e => {
@@ -36,10 +40,7 @@ function UpdateMovie (props) {
           .put(`http://localhost:5000/api/movies/${props.match.params.id}`, updatedMovie)
           .then(res => {
                 console.log(res.data);
-                // setUpdatedMovie(initialMovie);
-                // props.setMovies(res.data);
                 props.history.push('/');
-                console.log('LOOK AT MEEE', props.movies)
             })
         
           .catch(err => console.log(err.response));
@@ -76,8 +77,12 @@ function UpdateMovie (props) {
                 placeholder="metascore"
                 onChange={handleChange}
                 />
+
+            {updatedMovie.stars.map((starName, starIndex) => <input type="text" id="star" name="star" placeholder={starName} value={starName} key={starIndex} onChange={handleStars(starIndex)}/>)}
+
                 <button type="submit"> Update Movie</button>
                 {console.log('update on change? ' , updatedMovie)}
+
         </form>
     )
 }

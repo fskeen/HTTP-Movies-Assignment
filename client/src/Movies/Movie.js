@@ -36,7 +36,10 @@ const Movie = (props) => {
     return;
   }, [movieSaved])
 
-
+  const deleteMovie = (id) => {
+    axios.delete(`http://localhost:5000/api/movies/${id}`)
+    props.history.push('/')
+  }
 
   if (!movie) {
     return <div>Loading movie information...</div>;
@@ -47,6 +50,9 @@ const Movie = (props) => {
       <button
         onClick={() => props.history.push(`/update-movie/${id}`)}
         >Update Movie Info</button>
+      <button
+        onClick={() => deleteMovie(id)}
+        >BALEETED</button>
 
 
       <MovieCard key={movie.id} movie={movie}/>
